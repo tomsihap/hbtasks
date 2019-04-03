@@ -32,6 +32,9 @@ $res = $bdd->query("SELECT
 
 $tasks = $res->fetchAll(PDO::FETCH_ASSOC);
 
+$res2 = $bdd->query('SELECT * FROM categories');
+$categories = $res2->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 <?php include 'partials/_header.php'; ?>
@@ -60,7 +63,7 @@ $tasks = $res->fetchAll(PDO::FETCH_ASSOC);
                                     $date = new DateTime($task['due_date']);
                                     $dateFr = $date->format('l d F');
 
-                                    echo "À faire avant le" . $dateFr;
+                                    echo "À faire avant le " . $dateFr;
 
                                 else :
                                     echo "À faire";
@@ -75,6 +78,41 @@ $tasks = $res->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                 </div>
                 <?php endforeach; ?>
+
+
+<hr>
+
+<h2>Ajouter une tâche :</h2>
+
+<form action="create-task.php" method="POST" class="form">
+
+    <div class="form-group">
+        <label for="titleTask">Titre *</label>
+        <input type="text" id="titleTask" class="form-control" name="title">
+    </div>
+
+    <div class="form-group">
+        <label for="descTask">Description</label>
+        <input type="text" id="descTask" class="form-control" name="description">
+    </div>
+
+    <div class="form-group">
+        <label for="duedateTask">À faire avant le :</label>
+        <input type="date" id="duedateTask" class="form-control" name="due_date">
+    </div>
+
+    <div class="form-group">
+        <label for="catTask">Catégorie</label>
+        <select name="category_id" id="catTask" class="form-control">
+            <?php foreach($categories as $c): ?>
+                <option value="<?= $c['id'] ?>"><?= $c['title'] ?></option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-success float-right">Créer</button>
+
+</form>
 
 
 
