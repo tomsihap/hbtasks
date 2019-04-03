@@ -83,9 +83,7 @@ $task = $response->fetch();
                 <div class="card mt-2">
                     <div class="card-body <?= $task['state'] ?'bg-dark text-white' : '' ?>">
                         <h5 class="card-title">
-                            <a href="show.php?task_id=<?= $task['id'] ?>">
                                 <?= $task['taskTitle']?>
-                            </a>
                         </h5>
                         <h6 class="card-subtitle mb-2 text-muted"><?= $task['catTitle'] ?></h6>
                         <p class="card-text"><?= $task['description'] ?></p>
