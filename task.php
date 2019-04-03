@@ -2,6 +2,9 @@
 
 require_once 'database.php';
 
+if (!isset($_GET['task_id'])) {
+    Header('Location: tasks.php');
+}
 $id = $_GET['task_id'];
 
 $request = '    SELECT  *,

@@ -1,38 +1,34 @@
 <?php
+
+// Récupérer l'ID de la catégorie
+/**
+ * if ( !isset($_GET['id']) ) {
+ *  $_GET['id'] = 1;
+ * }
+ * $id = $_GET['id'];
+ * Version Conditions ternaires : $variable = condition ? valeur_si_vraie : valeur_si_faux;
+ */
+$id = isset($_GET['id']) ? $_GET['id'] : 1; // ou !isset($_GET['id']) ? 1 : $_GET['id'];
+
+// Récupérer toutes les tâches de la catégorie
 require_once 'database.php';
 
-/**
- * Queries avec PDO :
- * 1. On se connecte à PDO ($bdd dans database.php)
- * 2. On execute une requête sur $bdd :
- *      $response = $bdd->query('SELECT * FROM USERS');
- *
- * 3. On lit les données de la réponse :
- *      $users = $response->fetchAll();
- *
- * 4. On veut que les données soient retournées en array associatif,
- *      on rajoute "PDO::FETCH_ASSOC" au fetchAll().
- * (ex: $user['name'] = 'Thomas')
- *
- *      $users = $response->fetchAll(PDO::FETCH_ASSOC);
- */
+$resultat = $bdd->query('SELECT tasks.id as taskId,
+                                tasks.title as taskTitle,
+                                tasks.description as description,
+                                tasks.due_date as due_date,
+                                tasks.state as state,
+                                categories.id as catId,
+                                categories.title as catTitle
+                        FROM tasks
+                        LEFT JOIN categories
+                            ON tasks.category_id = categories.id
+                        WHERE category_id = ' . $id);
 
-
-$res = $bdd->query("SELECT
-                        tasks.id as taskId,
-                        tasks.title as taskTitle,
-                        tasks.description as description,
-                        tasks.due_date as due_date,
-                        tasks.state as state,
-                        categories.id as catId,
-                        categories.title as catTitle
-                    FROM tasks
-                    LEFT JOIN categories
-                        ON tasks.category_id = categories.id");
-
-$tasks = $res->fetchAll(PDO::FETCH_ASSOC);
+$tasks = $resultat->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
+
 
 <!doctype html>
 <html lang="en">
@@ -101,7 +97,11 @@ $tasks = $res->fetchAll(PDO::FETCH_ASSOC);
                                 <?= $task['taskTitle']?>
                             </a>
                         </h5>
-                        <h6 class="card-subtitle mb-2 text-muted"><?= $task['catTitle'] ?></h6>
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <a href="category.php?id=<?= $task['catId']?>">
+                                <?= $task['catTitle'] ?>
+                            </a>
+                        </h6>
                         <p class="card-text"><?= $task['description'] ?></p>
 
                         <a href="switchState.php?task_id=<?= $task['taskId'] ?>" class="btn btn-primary float-right">
